@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONObject;
+
 public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View textView) {
@@ -12,7 +14,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         }
     }
 
-    public ScheduleAdapter() {
+    public ScheduleAdapter(JSONObject schedule) {
 
     }
 

@@ -37,12 +37,11 @@ public class DataModel {
     public static HashMap getSchedule(Context context) {
         String scheduleString = getPrefsString(context, "schedule");
 
-        try {
-            HashMap<String, ArrayList<HashMap<String, String>>> scheduleMap = new Gson().fromJson(scheduleString, new TypeToken<HashMap<String, ArrayList<HashMap<String, String>>>>() {}.getType());
-            return scheduleMap;
-        } catch (JSONException e) {
-            return null;
+        if (scheduleString != null) {
+            return new Gson().fromJson(scheduleString, new TypeToken<HashMap<String, ArrayList<HashMap<String, String>>>>() {}.getType());
         }
+
+        return null;
     }
 
     public static void updateData(final FragmentActivity context) {

@@ -8,22 +8,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONObject;
-
 public class FragmentSchedule extends Fragment {
-    public static FragmentSchedule newInstance() {
-        FragmentSchedule fragment = new FragmentSchedule();
-        return fragment;
+    private static FragmentSchedule instance = null;
+
+    private RecyclerView recyclerView;
+
+    public static FragmentSchedule getInstance() {
+        if (instance == null) {
+            instance = new FragmentSchedule();
+        }
+
+        return instance;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
 
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new ScheduleAdapter(new JSONObject()));
+
+        updateSchedule();
 
         return view;
+    }
+
+    public void updateSchedule() {
+        recyclerView.setAdapter(new ScheduleAdapter(getActivity()));
     }
 }

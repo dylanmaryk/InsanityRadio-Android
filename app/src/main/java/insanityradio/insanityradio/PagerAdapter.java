@@ -9,9 +9,8 @@ public class PagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private String tabTitles[] = new String[] { "Now Playing", "Schedule" };
 
-    public PagerAdapter(FragmentManager fm, Context context) {
+    public PagerAdapter(FragmentManager fm) {
         super(fm);
-        this.context = context;
     }
 
     @Override
@@ -24,7 +23,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
         if (position == 0)
             return FragmentNowPlaying.newInstance();
         else
-            return FragmentSchedule.newInstance();
+            return FragmentSchedule.getInstance();
     }
 
     @Override

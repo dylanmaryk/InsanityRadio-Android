@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,8 +38,6 @@ public class DataModel {
         String scheduleString = getPrefsString(context, "schedule");
 
         try {
-            JSONObject scheduleJson = new JSONObject(scheduleString);
-
             HashMap<String, ArrayList<HashMap<String, String>>> scheduleMap = new Gson().fromJson(scheduleString, new TypeToken<HashMap<String, ArrayList<HashMap<String, String>>>>() {}.getType());
             return scheduleMap;
         } catch (JSONException e) {

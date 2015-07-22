@@ -71,6 +71,6 @@ public class DataModel {
     }
 
     public static String getPrefsString(Context context, String key) {
-        return ((FragmentActivity) context).getPreferences(Context.MODE_PRIVATE).getString(key, "0");
+        return ((FragmentActivity) context).getPreferences(Context.MODE_PRIVATE).getString(key, null);
     }
 }

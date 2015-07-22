@@ -27,13 +27,15 @@ public class FragmentSchedule extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(new ScheduleAdapter());
 
-        updateSchedule();
+        // Scroll to current day
 
         return view;
     }
 
     public void updateSchedule() {
-        recyclerView.setAdapter(new ScheduleAdapter(getActivity()));
+        if (recyclerView != null)
+            recyclerView.swapAdapter(new ScheduleAdapter(), true);
     }
 }

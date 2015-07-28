@@ -34,7 +34,17 @@ public class DataModel {
     }
     */
 
-    public static HashMap getSchedule(Context context) {
+    public static HashMap<String, String> getCurrentShow(Context context) {
+        String currentShowString = getPrefsString(context, "currentShow");
+
+        if (currentShowString != null) {
+            return new Gson().fromJson(currentShowString, new TypeToken<HashMap<String, String>>() {}.getType());
+        }
+
+        return null;
+    }
+
+    public static HashMap<String, ArrayList<HashMap<String, String>>> getSchedule(Context context) {
         String scheduleString = getPrefsString(context, "schedule");
 
         if (scheduleString != null) {
@@ -49,9 +59,11 @@ public class DataModel {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try {
+                    JSONObject currentShow = jsonObject.getJSONObject("currentShow");
                     JSONObject schedule = jsonObject.getJSONObject("schedule");
 
                     SharedPreferences.Editor editor = context.getPreferences(Context.MODE_PRIVATE).edit();
+                    editor.putString("currentShow", currentShow.toString());
                     editor.putString("schedule", schedule.toString());
                     editor.commit();
 

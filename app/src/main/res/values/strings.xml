@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Insanity Radio</string>
+    <string name="action_comment">Comment</string>
+    <string name="action_share">Share</string>
 </resources>

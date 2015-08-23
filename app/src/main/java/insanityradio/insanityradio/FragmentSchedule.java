@@ -50,23 +50,23 @@ public class FragmentSchedule extends Fragment {
     }
 
     private void scrollToToday() {
-        if (linearLayoutManager != null) {
-            HashMap<String, String> currentShow = DataModel.getCurrentShow(getActivity());
+        HashMap<String, String> currentShow = DataModel.getCurrentShow(getActivity());
 
-            if (currentShow != null) {
-                String today = currentShow.get("dayOfTheWeek");
+        String today = null;
 
-                if (today != null) {
-                    int sectionToday = scheduleAdapter.sectionForDay(today);
-                    int itemToday = 0;
+        if (currentShow != null) {
+            today = currentShow.get("dayOfTheWeek");
+        }
 
-                    for (int section = 0; section < sectionToday; section++) {
-                        itemToday += scheduleAdapter.getItemCountForSection(section) + 1;
-                    }
+        if (today != null && linearLayoutManager != null) {
+            int sectionToday = scheduleAdapter.sectionForDay(today);
+            int itemToday = 0;
 
-                    linearLayoutManager.scrollToPosition(itemToday);
-                }
+            for (int section = 0; section < sectionToday; section++) {
+                itemToday += scheduleAdapter.getItemCountForSection(section) + 1;
             }
+
+            linearLayoutManager.scrollToPosition(itemToday);
         }
     }
 }

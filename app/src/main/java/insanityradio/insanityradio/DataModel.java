@@ -82,7 +82,7 @@ public class DataModel {
         VolleySingleton.getInstance(context).getRequestQueue().add(objectRequest);
     }
 
-    public static String getPrefsString(Context context, String key) {
+    private static String getPrefsString(Context context, String key) {
         return ((FragmentActivity) context).getPreferences(Context.MODE_PRIVATE).getString(key, null);
     }
 }

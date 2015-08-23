@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
+
 public class FragmentSchedule extends Fragment {
     private static FragmentSchedule instance;
 
@@ -49,17 +51,21 @@ public class FragmentSchedule extends Fragment {
 
     private void scrollToToday() {
         if (linearLayoutManager != null) {
-            String today = DataModel.getCurrentShow(getActivity()).get("dayOfTheWeek");
+            HashMap<String, String> currentShow = DataModel.getCurrentShow(getActivity());
 
-            if (today != null) {
-                int sectionToday = scheduleAdapter.sectionForDay(today);
-                int itemToday = 0;
+            if (currentShow != null) {
+                String today = currentShow.get("dayOfTheWeek");
 
-                for (int section = 0; section < sectionToday; section++) {
-                    itemToday += scheduleAdapter.getItemCountForSection(section) + 1;
+                if (today != null) {
+                    int sectionToday = scheduleAdapter.sectionForDay(today);
+                    int itemToday = 0;
+
+                    for (int section = 0; section < sectionToday; section++) {
+                        itemToday += scheduleAdapter.getItemCountForSection(section) + 1;
+                    }
+
+                    linearLayoutManager.scrollToPosition(itemToday);
                 }
-
-                linearLayoutManager.scrollToPosition(itemToday);
             }
         }
     }

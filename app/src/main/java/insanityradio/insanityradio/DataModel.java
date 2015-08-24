@@ -54,6 +54,17 @@ public class DataModel {
         return null;
     }
 
+    public static String getShareText(Context context) {
+        String shareTextString = getPrefsString(context, "shareText");
+
+        if (shareTextString != null) {
+            return shareTextString;
+        }
+
+        // Determine final default text before release
+        return "I'm listening to Insanity Radio via the Insanity Radio 103.2FM app www.insanityradio.com/listen";
+    }
+
     public static void updateData(final FragmentActivity context) {
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, "http://www.insanityradio.com/app.json", null, new Response.Listener<JSONObject>() {
             @Override
@@ -62,11 +73,15 @@ public class DataModel {
                     JSONObject currentShow = jsonObject.getJSONObject("currentShow");
                     JSONObject schedule = jsonObject.getJSONObject("schedule");
 
+                    String shareText = jsonObject.getString("shareText");
+
                     SharedPreferences.Editor editor = context.getPreferences(Context.MODE_PRIVATE).edit();
                     editor.putString("currentShow", currentShow.toString());
                     editor.putString("schedule", schedule.toString());
+                    editor.putString("shareText", shareText);
                     editor.commit();
 
+                    ((MainActivity) context).setShareIntent();
                     FragmentSchedule.getInstance().updateSchedule();
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -81,7 +81,6 @@ public class DataModel {
                     editor.putString("shareText", shareText);
                     editor.commit();
 
-                    ((MainActivity) context).setShareIntent();
                     FragmentSchedule.getInstance().updateSchedule();
                 } catch (JSONException e) {
                     e.printStackTrace();

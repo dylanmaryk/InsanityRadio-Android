@@ -30,12 +30,6 @@ public class MainActivity extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_activity_actions, menu);
 
-        MenuItem shareMenuItem = menu.findItem(R.id.action_share);
-
-        shareActionProvider = (ShareActionProvider) shareMenuItem.getActionProvider();
-
-        setShareIntent();
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -44,18 +38,16 @@ public class MainActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case R.id.action_comment:
                 return true;
+            case R.id.action_share:
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, DataModel.getShareText(this));
+
+                startActivity(intent);
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void setShareIntent() {
-        if (shareActionProvider != null) {
-            String shareText = DataModel.getShareText(this);
-
-            Intent shareIntent = ShareCompat.IntentBuilder.from(this).setType("text/plain").setText(shareText).getIntent();
-
-            shareActionProvider.setShareIntent(shareIntent);
         }
     }
 }

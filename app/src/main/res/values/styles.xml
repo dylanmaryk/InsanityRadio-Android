@@ -9,4 +9,6 @@
     </style>
 
     <color name="InsanityOrange">#FFFF6000</color>
+
+    <color name="InsanityOrangeDark">#B44B00</color>
 </resources>

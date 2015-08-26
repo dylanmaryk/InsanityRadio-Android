@@ -30,7 +30,7 @@ public class FragmentSchedule extends Fragment {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        scheduleAdapter = new ScheduleAdapter(getActivity());
+        scheduleAdapter = new ScheduleAdapter();
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
@@ -43,7 +43,7 @@ public class FragmentSchedule extends Fragment {
 
     public void updateSchedule() {
         if (recyclerView != null) {
-            scheduleAdapter = new ScheduleAdapter(getActivity());
+            scheduleAdapter = new ScheduleAdapter();
             recyclerView.swapAdapter(scheduleAdapter, true);
         }
 

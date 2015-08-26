@@ -121,6 +121,11 @@ public class DataModel {
         return "I'm listening to Insanity Radio via the Insanity Radio 103.2FM app www.insanityradio.com/listen";
     }
 
+    public static boolean getEnableComment(Context context) {
+        // Determine final default value before release
+        return getPrefsBoolean(context, "enableComment", true);
+    }
+
     public static void updateData(final FragmentActivity context) {
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, "http://www.insanityradio.com/app.json", null, new Response.Listener<JSONObject>() {
             @Override
@@ -143,8 +148,17 @@ public class DataModel {
                     e.printStackTrace();
                 }
 
+                try {
+                    boolean enableComment = jsonObject.getBoolean("enableComment");
+
+                    editor.putBoolean("enableComment", enableComment);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 editor.commit();
 
+                ((MainActivity) context).updateUI();
                 FragmentSchedule.getInstance().updateSchedule();
             }
         }, new Response.ErrorListener() {
@@ -158,6 +172,14 @@ public class DataModel {
     }
 
     private static String getPrefsString(Context context, String key) {
-        return ((FragmentActivity) context).getPreferences(Context.MODE_PRIVATE).getString(key, null);
+        return getPrefs(context).getString(key, null);
+    }
+
+    private static boolean getPrefsBoolean(Context context, String key, boolean defaultValue) {
+        return getPrefs(context).getBoolean(key, defaultValue);
+    }
+
+    private static SharedPreferences getPrefs(Context context) {
+        return ((FragmentActivity) context).getPreferences(Context.MODE_PRIVATE);
     }
 }

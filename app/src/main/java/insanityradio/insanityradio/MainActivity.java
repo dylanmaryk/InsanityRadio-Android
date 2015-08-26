@@ -29,6 +29,9 @@ public class MainActivity extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_activity_actions, menu);
 
+        MenuItem commentItem = menu.findItem(R.id.action_comment);
+        commentItem.setVisible(DataModel.getEnableComment(this));
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -52,5 +55,9 @@ public class MainActivity extends FragmentActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void updateUI() {
+        invalidateOptionsMenu();
     }
 }

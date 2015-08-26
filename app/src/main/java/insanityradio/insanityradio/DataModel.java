@@ -26,8 +26,7 @@ public class DataModel {
         HashMap<String, ArrayList<HashMap<String, String>>> schedule = getSchedule(context);
 
         if (schedule != null) {
-            Calendar showTimeCalendar = Calendar.getInstance();
-            showTimeCalendar.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+            Calendar showTimeCalendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/London"));
             showTimeCalendar.set(Calendar.YEAR, 1982);
             showTimeCalendar.set(Calendar.MONTH, 7);
 

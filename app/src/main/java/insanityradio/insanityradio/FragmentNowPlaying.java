@@ -14,6 +14,8 @@ public class FragmentNowPlaying extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setRetainInstance(true);
+
         DataModel.updateData(getActivity());
 
         View view = inflater.inflate(R.layout.fragment_nowplaying, container, false);

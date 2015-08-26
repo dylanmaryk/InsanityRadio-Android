@@ -27,6 +27,8 @@ public class FragmentSchedule extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setRetainInstance(true);
+
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());

@@ -67,6 +67,7 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
         if (schedule == null) {
             schedule = DataModel.getSchedule(FragmentSchedule.getInstance().getActivity());
         }
+        // TODO: Add cannot download schedule error message
         // } else {
             // Cannot download schedule error message
         // }

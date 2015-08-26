@@ -1,12 +1,10 @@
 package insanityradio.insanityradio;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
-    private Context context;
     private String tabTitles[] = new String[] { "Now Playing", "Schedule" };
 
     public PagerAdapter(FragmentManager fm) {
@@ -21,6 +19,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
+            // TODO: Get existing instance if one
             return FragmentNowPlaying.newInstance();
         } else {
             return FragmentSchedule.getInstance();

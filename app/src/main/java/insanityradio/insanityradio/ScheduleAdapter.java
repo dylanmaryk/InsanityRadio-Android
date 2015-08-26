@@ -79,14 +79,18 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
     }
 
     @Override
-    protected String getSectionHeaderTitle(int section) {
-        String day = dayForSection(section);
-        return day.substring(0, 1).toUpperCase() + day.substring(1);
+    protected int getItemCountForSection(int section) {
+        if (schedule != null) {
+            return schedule.get(dayForSection(section)).size();
+        }
+
+        return 0;
     }
 
     @Override
-    protected int getItemCountForSection(int section) {
-        return schedule.get(dayForSection(section)).size();
+    protected String getSectionHeaderTitle(int section) {
+        String day = dayForSection(section);
+        return day.substring(0, 1).toUpperCase() + day.substring(1);
     }
 
     public int sectionForDay(String day) {

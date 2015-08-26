@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:fillViewport="false"
         android:background="@color/InsanityOrange"
-        app:tabMode="scrollable"
+        app:tabGravity="fill"
         app:tabIndicatorColor="@android:color/white"
         app:tabSelectedTextColor="@android:color/white" />
 

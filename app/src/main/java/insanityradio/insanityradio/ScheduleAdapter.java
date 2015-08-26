@@ -3,6 +3,7 @@ package insanityradio.insanityradio;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.ViewHolder> {
+    private FragmentActivity fragmentActivity;
     private HashMap<String, ArrayList<HashMap<String, String>>> schedule;
+
+    public ScheduleAdapter(FragmentActivity fragmentActivity) {
+        this.fragmentActivity = fragmentActivity;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View viewHolderView;
@@ -39,7 +45,7 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
             if (!linkURL.equals("")) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkURL));
 
-                FragmentSchedule.getInstance().getActivity().startActivity(browserIntent);
+                fragmentActivity.startActivity(browserIntent);
             }
         }
     }
@@ -65,7 +71,7 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
     @Override
     protected int getSectionCount() {
         if (schedule == null) {
-            schedule = DataModel.getSchedule(FragmentSchedule.getInstance().getActivity());
+            schedule = DataModel.getSchedule(fragmentActivity);
         }
         // } else {
             // Cannot download schedule error message
@@ -79,14 +85,18 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
     }
 
     @Override
-    protected String getSectionHeaderTitle(int section) {
-        String day = dayForSection(section);
-        return day.substring(0, 1).toUpperCase() + day.substring(1);
+    protected int getItemCountForSection(int section) {
+        if (schedule != null) {
+            return schedule.get(dayForSection(section)).size();
+        }
+
+        return 0;
     }
 
     @Override
-    protected int getItemCountForSection(int section) {
-        return schedule.get(dayForSection(section)).size();
+    protected String getSectionHeaderTitle(int section) {
+        String day = dayForSection(section);
+        return day.substring(0, 1).toUpperCase() + day.substring(1);
     }
 
     public int sectionForDay(String day) {

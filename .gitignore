@@ -5,3 +5,11 @@
 .DS_Store
 /build
 /captures
+
+socialize/.gradle
+socialize/local.properties
+socialize/.idea/workspace.xml
+socialize/.idea/libraries
+socialize/.DS_Store
+socialize/build
+socialize/captures

@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ShareCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ShareActionProvider;
+
+import com.socialize.CommentUtils;
+import com.socialize.entity.Entity;
 
 public class MainActivity extends FragmentActivity {
-    private ShareActionProvider shareActionProvider;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +36,10 @@ public class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_comment:
+                Entity entity = Entity.newInstance("insanityradio", null);
+
+                CommentUtils.showCommentView(this, entity);
+
                 return true;
             case R.id.action_share:
                 Intent intent = new Intent(Intent.ACTION_SEND);

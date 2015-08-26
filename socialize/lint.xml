@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="Orientation" severity="warning" />
+    <issue id="ValidFragment" severity="warning" />
+    <issue id="WrongCall" severity="warning" />
+    <issue id="NewApi" severity="warning" />
+</lint>

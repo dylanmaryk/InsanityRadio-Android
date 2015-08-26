@@ -15,33 +15,87 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class DataModel {
-    /*
-    private static DataModel instance = null;
-
-    private DataModel(Context context) {
-
-    }
-
-    public static DataModel getInstance(Context context) {
-        if (instance == null) {
-            instance = new DataModel(context);
-        }
-
-        return instance;
-    }
-    */
-
     public static HashMap<String, String> getCurrentShow(Context context) {
-        String currentShowString = getPrefsString(context, "currentShow");
+        HashMap<String, String> currentShow = new HashMap<>();
 
-        if (currentShowString != null) {
-            return new Gson().fromJson(currentShowString, new TypeToken<HashMap<String, String>>() {}.getType());
+        HashMap<String, ArrayList<HashMap<String, String>>> schedule = getSchedule(context);
+
+        if (schedule != null) {
+            Calendar showTimeCalendar = Calendar.getInstance();
+            showTimeCalendar.set(Calendar.YEAR, 1982);
+            showTimeCalendar.set(Calendar.MONTH, 7);
+
+            int weekdayInt = showTimeCalendar.get(Calendar.DAY_OF_WEEK) - 1;
+
+            showTimeCalendar.set(Calendar.DATE, weekdayInt);
+
+            long showTimeLong = showTimeCalendar.getTimeInMillis() / 1000;
+
+            String dayString = getDayStringForDayInt(weekdayInt);
+
+            ArrayList<HashMap<String, String>> day = schedule.get(dayString);
+
+            if (day != null) {
+                for (HashMap<String, String> show : day) {
+                    try {
+                        int startTime = Integer.parseInt(show.get("startTime"));
+                        int endTime = Integer.parseInt(show.get("endTime"));
+
+                        if (startTime <= showTimeLong + 1 && endTime > showTimeLong) {
+                            String showName = show.get("showName");
+                            String showPresenters = show.get("showPresenters");
+                            String linkURL = show.get("linkURL");
+                            String imageURL = show.get("imageURL");
+
+                            currentShow.put("day", dayString);
+                            currentShow.put("name", showName);
+                            currentShow.put("presenters", showPresenters);
+                            currentShow.put("link", linkURL);
+                            currentShow.put("imageURL", imageURL);
+
+                            break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
 
-        return null;
+        if (currentShow.isEmpty()) {
+            currentShow.put("day", "");
+            currentShow.put("name", "");
+            currentShow.put("presenters", "");
+            currentShow.put("link", "");
+            currentShow.put("imageURL", "");
+        }
+
+        return currentShow;
+    }
+
+    private static String getDayStringForDayInt(int day) {
+        switch (day) {
+            case 1:
+                return "sunday";
+            case 2:
+                return "monday";
+            case 3:
+                return "tuesday";
+            case 4:
+                return "wednesday";
+            case 5:
+                return "thursday";
+            case 6:
+                return "friday";
+            case 7:
+                return "saturday";
+            default:
+                return "";
+        }
     }
 
     public static HashMap<String, ArrayList<HashMap<String, String>>> getSchedule(Context context) {
@@ -69,22 +123,27 @@ public class DataModel {
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, "http://www.insanityradio.com/app.json", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                SharedPreferences.Editor editor = context.getPreferences(Context.MODE_PRIVATE).edit();
+
                 try {
-                    JSONObject currentShow = jsonObject.getJSONObject("currentShow");
                     JSONObject schedule = jsonObject.getJSONObject("schedule");
 
-                    String shareText = jsonObject.getString("shareText");
-
-                    SharedPreferences.Editor editor = context.getPreferences(Context.MODE_PRIVATE).edit();
-                    editor.putString("currentShow", currentShow.toString());
                     editor.putString("schedule", schedule.toString());
-                    editor.putString("shareText", shareText);
-                    editor.commit();
-
-                    FragmentSchedule.getInstance().updateSchedule();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                try {
+                    String shareText = jsonObject.getString("shareText");
+
+                    editor.putString("shareText", shareText);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                editor.commit();
+
+                FragmentSchedule.getInstance().updateSchedule();
             }
         }, new Response.ErrorListener() {
             @Override

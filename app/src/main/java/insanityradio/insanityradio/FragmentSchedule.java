@@ -18,8 +18,9 @@ public class FragmentSchedule extends Fragment {
     private ScheduleAdapter scheduleAdapter;
 
     public static FragmentSchedule getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new FragmentSchedule();
+        }
 
         return instance;
     }
@@ -55,7 +56,7 @@ public class FragmentSchedule extends Fragment {
         String today = null;
 
         if (currentShow != null) {
-            today = currentShow.get("dayOfTheWeek");
+            today = currentShow.get("day");
         }
 
         if (today != null && linearLayoutManager != null) {

@@ -20,10 +20,11 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0)
+        if (position == 0) {
             return FragmentNowPlaying.newInstance();
-        else
+        } else {
             return FragmentSchedule.getInstance();
+        }
     }
 
     @Override

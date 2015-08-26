@@ -64,13 +64,16 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
 
     @Override
     protected int getSectionCount() {
-        if (schedule == null)
+        if (schedule == null) {
             schedule = DataModel.getSchedule(FragmentSchedule.getInstance().getActivity());
-        // else
+        }
+        // } else {
             // Cannot download schedule error message
+        // }
 
-        if (schedule != null)
+        if (schedule != null) {
             return schedule.size();
+        }
 
         return 0;
     }

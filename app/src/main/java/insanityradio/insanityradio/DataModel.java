@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public class DataModel {
     public static HashMap<String, String> getCurrentShow(Context context) {
@@ -26,6 +27,7 @@ public class DataModel {
 
         if (schedule != null) {
             Calendar showTimeCalendar = Calendar.getInstance();
+            showTimeCalendar.setTimeZone(TimeZone.getTimeZone("Europe/London"));
             showTimeCalendar.set(Calendar.YEAR, 1982);
             showTimeCalendar.set(Calendar.MONTH, 7);
 

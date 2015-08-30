@@ -1,1 +1,1 @@
-include ':app', ':socialize'
+include ':app', ':socialize', ':radio'

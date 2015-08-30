@@ -4,7 +4,7 @@ android {
     compileSdkVersion 22
     buildToolsVersion "21.1.2"
     defaultConfig {
-        applicationId "insanityradio.insanityradio"
+        applicationId "com.insanityradio.insanityradio"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1

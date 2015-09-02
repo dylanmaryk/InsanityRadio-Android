@@ -10,11 +10,16 @@ import co.mobiwise.library.RadioListener;
 import co.mobiwise.library.RadioManager;
 
 public class FragmentNowPlaying extends Fragment implements RadioListener {
+    private static FragmentNowPlaying instance;
+
     private RadioManager radioManager;
 
-    public static FragmentNowPlaying newInstance() {
-        FragmentNowPlaying fragment = new FragmentNowPlaying();
-        return fragment;
+    public static FragmentNowPlaying getInstance() {
+        if (instance == null) {
+            instance = new FragmentNowPlaying();
+        }
+
+        return instance;
     }
 
     @Override

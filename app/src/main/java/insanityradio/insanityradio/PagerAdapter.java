@@ -19,8 +19,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            // TODO: Get existing instance if one
-            return FragmentNowPlaying.newInstance();
+            return FragmentNowPlaying.getInstance();
         } else {
             return FragmentSchedule.getInstance();
         }

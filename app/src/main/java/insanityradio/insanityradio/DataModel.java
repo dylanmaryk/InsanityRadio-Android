@@ -192,12 +192,16 @@ public class DataModel {
 
             }
         });
-        objectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        objectRequest.setRetryPolicy(getRetryPolicy());
 
         VolleySingleton.getInstance(context).getRequestQueue().add(objectRequest);
+    }
+
+    public static DefaultRetryPolicy getRetryPolicy() {
+        return new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     }
 
     private static String getPrefsString(Context context, String key) {

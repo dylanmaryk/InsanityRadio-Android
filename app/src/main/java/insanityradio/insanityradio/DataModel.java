@@ -27,11 +27,14 @@ public class DataModel {
         HashMap<String, ArrayList<HashMap<String, String>>> schedule = getSchedule(context);
 
         if (schedule != null) {
+            Calendar currentCalendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/London"));
+            currentCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
+
             Calendar showTimeCalendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/London"));
             showTimeCalendar.set(Calendar.YEAR, 1982);
             showTimeCalendar.set(Calendar.MONTH, 7);
 
-            int weekdayInt = showTimeCalendar.get(Calendar.DAY_OF_WEEK) - 1;
+            int weekdayInt = currentCalendar.get(Calendar.DAY_OF_WEEK);
 
             showTimeCalendar.set(Calendar.DATE, weekdayInt);
 
@@ -100,6 +103,19 @@ public class DataModel {
         }
     }
 
+    public static HashMap<String, String> getNowPlaying(Context context) {
+        String nowPlayingString = getPrefsString(context, "nowPlaying");
+
+        if (nowPlayingString != null) {
+            return new Gson().fromJson(nowPlayingString, new TypeToken<HashMap<String, String>>() {}.getType());
+        }
+
+        HashMap<String, String> nowPlaying = new HashMap<>();
+        nowPlaying.put("song", "");
+        nowPlaying.put("artist", "");
+        return nowPlaying;
+    }
+
     public static HashMap<String, ArrayList<HashMap<String, String>>> getSchedule(Context context) {
         String scheduleString = getPrefsString(context, "schedule");
 
@@ -133,6 +149,14 @@ public class DataModel {
                 SharedPreferences.Editor editor = context.getPreferences(Context.MODE_PRIVATE).edit();
 
                 try {
+                    JSONObject nowPlaying = jsonObject.getJSONObject("nowPlaying");
+
+                    editor.putString("nowPlaying", nowPlaying.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
                     JSONObject schedule = jsonObject.getJSONObject("schedule");
 
                     editor.putString("schedule", schedule.toString());
@@ -159,6 +183,7 @@ public class DataModel {
                 editor.commit();
 
                 ((MainActivity) context).updateUI();
+                FragmentNowPlaying.getInstance().updatePlayer();
                 FragmentSchedule.getInstance().updateSchedule();
             }
         }, new Response.ErrorListener() {

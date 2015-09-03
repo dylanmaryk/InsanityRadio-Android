@@ -60,7 +60,7 @@ public class DataModel {
                 if (showsYesterday != null && !showsYesterday.isEmpty()) {
                     HashMap<String, String> lastShowYesterday = showsYesterday.get(showsYesterday.size() - 1);
 
-                    shows.add(0, lastShowYesterday);
+                    shows.add(lastShowYesterday);
                 }
 
                 for (HashMap<String, String> show : shows) {
@@ -68,7 +68,10 @@ public class DataModel {
                         int startTime = Integer.parseInt(show.get("startTime"));
                         int endTime = Integer.parseInt(show.get("endTime"));
 
-                        if (startTime <= showTimeLong + 1 && endTime > showTimeLong) {
+                        // Note: Making assumption that if the last show of the week ends after the end of the week, it ends when the first show of the week begins
+                        boolean showEndsAfterEndOfWeek = endTime > 397609200;
+
+                        if ((startTime <= showTimeLong + 1 && endTime > showTimeLong) || showEndsAfterEndOfWeek) {
                             String showName = show.get("showName");
                             String showPresenters = show.get("showPresenters");
                             String linkURL = show.get("linkURL");
@@ -82,7 +85,7 @@ public class DataModel {
 
                             break;
                         }
-                    } catch (Exception e) {
+                    } catch (NullPointerException | NumberFormatException e) {
                         e.printStackTrace();
                     }
                 }

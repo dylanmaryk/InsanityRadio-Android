@@ -42,10 +42,28 @@ public class DataModel {
 
             String dayString = getDayStringForDayInt(weekdayInt);
 
-            ArrayList<HashMap<String, String>> day = schedule.get(dayString);
+            ArrayList<HashMap<String, String>> shows = schedule.get(dayString);
 
-            if (day != null) {
-                for (HashMap<String, String> show : day) {
+            if (shows != null) {
+                // Add last show of previous day to shows, in case current show started before midnight
+
+                int weekdayYesterdayInt = weekdayInt - 1;
+
+                if (weekdayYesterdayInt == 0) {
+                    weekdayYesterdayInt = 7;
+                }
+
+                String dayYesterdayString = getDayStringForDayInt(weekdayYesterdayInt);
+
+                ArrayList<HashMap<String, String>> showsYesterday = schedule.get(dayYesterdayString);
+
+                if (showsYesterday != null && !showsYesterday.isEmpty()) {
+                    HashMap<String, String> lastShowYesterday = showsYesterday.get(showsYesterday.size() - 1);
+
+                    shows.add(0, lastShowYesterday);
+                }
+
+                for (HashMap<String, String> show : shows) {
                     try {
                         int startTime = Integer.parseInt(show.get("startTime"));
                         int endTime = Integer.parseInt(show.get("endTime"));

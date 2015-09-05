@@ -181,6 +181,8 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
     @Override
     public void onMetaDataReceived(String s, String s1) {
-        DataModel.updateData(getActivity());
+        if (s != null && s.equals("StreamTitle")) {
+            DataModel.updateData(getActivity());
+        }
     }
 }

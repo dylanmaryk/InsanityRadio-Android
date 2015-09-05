@@ -107,6 +107,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         try {
             JSONObject track = (JSONObject) jsonObject.get("track");
             JSONObject album = (JSONObject) track.get("album");
+
             JSONArray images = (JSONArray) album.get("image");
 
             for (int i = 0; i < images.length(); i++) {

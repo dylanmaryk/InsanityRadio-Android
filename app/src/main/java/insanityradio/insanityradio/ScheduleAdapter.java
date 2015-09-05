@@ -1,5 +1,6 @@
 package insanityradio.insanityradio;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.ViewHolder> {
-    private HashMap<String, ArrayList<HashMap<String, String>>> schedule;
+    public HashMap<String, ArrayList<HashMap<String, String>>> schedule;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View viewHolderView;
@@ -67,10 +68,6 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
         if (schedule == null) {
             schedule = DataModel.getSchedule(FragmentSchedule.getInstance().getActivity());
         }
-        // TODO: Add cannot download schedule error message
-        // } else {
-            // Cannot download schedule error message
-        // }
 
         if (schedule != null) {
             return schedule.size();

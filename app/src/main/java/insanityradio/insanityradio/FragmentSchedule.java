@@ -1,5 +1,7 @@
 package insanityradio.insanityradio;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -70,6 +72,24 @@ public class FragmentSchedule extends Fragment {
             }
 
             linearLayoutManager.scrollToPosition(itemToday);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser && scheduleAdapter != null && scheduleAdapter.schedule == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(FragmentSchedule.getInstance().getActivity());
+            builder.setTitle("Cannot Download Schedule");
+            builder.setMessage("There was a problem downloading the schedule. Please check your Internet connection.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
     }
 }

@@ -1,5 +1,8 @@
 package insanityradio.insanityradio;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -7,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +33,10 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     private static FragmentNowPlaying instance;
 
     private RadioManager radioManager;
+    private Bitmap insanityIconBitmap;
     private HashMap<String, String> currentShow;
+    private HashMap<String, String> nowPlaying;
+    private ImageButton playPauseButton;
     private TextView currentShowTextView;
     private TextView nowPlayingTextView;
     private ImageView albumArtImageView;
@@ -49,9 +56,17 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         radioManager = RadioManager.with(getActivity());
         radioManager.connect();
         radioManager.registerListener(this);
+        insanityIconBitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.insanity_icon);
 
         View view = inflater.inflate(R.layout.fragment_nowplaying, container, false);
 
+        playPauseButton = (ImageButton) view.findViewById(R.id.play_pause);
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playPauseButtonTapped();
+            }
+        });
         currentShowTextView = (TextView) view.findViewById(R.id.current_show);
         nowPlayingTextView = (TextView) view.findViewById(R.id.now_playing);
         albumArtImageView = (ImageView) view.findViewById(R.id.album_art);
@@ -64,7 +79,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     public void updatePlayer() {
         updateCurrentShow();
 
-        HashMap<String, String> nowPlaying = DataModel.getNowPlaying(getActivity());
+        nowPlaying = DataModel.getNowPlaying(getActivity());
 
         String nowPlayingArtist = nowPlaying.get("artist");
         String nowPlayingSong = nowPlaying.get("song");
@@ -152,7 +167,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         }, 0, 0, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                displayFinalImage(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.insanity_icon));
+                displayFinalImage(insanityIconBitmap);
             }
         });
         imageRequest.setRetryPolicy(DataModel.getRetryPolicy());
@@ -164,19 +179,53 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         albumArtImageView.setImageBitmap(bitmap);
     }
 
+    private void playPauseButtonTapped() {
+        if (radioManager.isPlaying()) {
+            pauseRadio();
+        } else {
+            playRadio();
+        }
+    }
+
+    private void playRadio() {
+        playPauseButton.setEnabled(false);
+        playPauseButton.setAlpha(0.5f);
+        radioManager.startRadio("http://stream.insanityradio.com:8000/insanity320.mp3");
+    }
+
+    private void pauseRadio() {
+        playPauseButton.setEnabled(true);
+        playPauseButton.setAlpha(1.0f);
+        playPauseButton.setImageResource(R.drawable.play);
+        nowPlayingTextView.setText("");
+        radioManager.stopRadio();
+    }
+
     @Override
     public void onRadioConnected() {
-        radioManager.startRadio("http://stream.insanityradio.com:8000/insanity320.mp3");
+        playRadio();
     }
 
     @Override
     public void onRadioStarted() {
-
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playPauseButton.setEnabled(true);
+                playPauseButton.setAlpha(1.0f);
+                playPauseButton.setImageResource(R.drawable.stop);
+            }
+        });
     }
 
     @Override
     public void onRadioStopped() {
-
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                displayFinalImage(insanityIconBitmap);
+            }
+        });
     }
 
     @Override

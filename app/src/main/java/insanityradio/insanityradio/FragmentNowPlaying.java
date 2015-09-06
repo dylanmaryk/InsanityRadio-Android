@@ -1,9 +1,11 @@
 package insanityradio.insanityradio;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -249,6 +251,27 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         if (s != null && s.equals("StreamTitle")) {
             DataModel.updateData(getActivity());
         }
+    }
+
+    @Override
+    public void onPlayerException(Throwable throwable) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setTitle("Cannot Stream Insanity")
+                        .setMessage("There was a problem streaming Insanity Radio. Please check your Internet connection.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 
     private void displayNotification(Bitmap largeIconBitmap) {

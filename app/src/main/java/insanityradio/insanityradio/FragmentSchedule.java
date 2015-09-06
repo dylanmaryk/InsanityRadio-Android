@@ -78,7 +78,7 @@ public class FragmentSchedule extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && scheduleAdapter != null && scheduleAdapter.schedule == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(FragmentSchedule.getInstance().getActivity())
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                     .setTitle("Cannot Download Schedule")
                     .setMessage("There was a problem downloading the schedule. Please check your Internet connection.")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {

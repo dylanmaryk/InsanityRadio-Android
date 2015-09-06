@@ -1,5 +1,6 @@
 package insanityradio.insanityradio;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
@@ -165,6 +166,7 @@ public class DataModel {
 
     public static void updateData(final FragmentActivity context) {
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, "http://www.insanityradio.com/app.json", null, new Response.Listener<JSONObject>() {
+            @SuppressLint("CommitPrefEdits")
             @Override
             public void onResponse(JSONObject jsonObject) {
                 SharedPreferences.Editor editor = context.getPreferences(Context.MODE_PRIVATE).edit();

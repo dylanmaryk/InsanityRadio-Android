@@ -1,5 +1,6 @@
 package insanityradio.insanityradio;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -282,49 +284,64 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         });
     }
 
+    @SuppressLint("NewApi")
     private void displayNotification(Bitmap largeIconBitmap) {
-        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 16) {
+            NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (!radioManager.isPlaying() && cancelNotificationOnStop) {
-            notificationManager.cancel(1);
-        } else {
-            String contentTitle;
-            String contentText;
-            String actionTitle;
-
-            int actionIcon;
-
-            if (radioManager.isPlaying()) {
-                contentTitle = nowPlaying.get("song");
-                contentText = currentShow.get("name");
-                actionTitle = "Stop";
-                actionIcon = R.drawable.stop;
+            if (!radioManager.isPlaying() && cancelNotificationOnStop) {
+                notificationManager.cancel(1);
             } else {
-                contentTitle = "Insanity Radio";
-                contentText = "103.2FM";
-                actionTitle = "Play";
-                actionIcon = R.drawable.play;
+                String contentTitle;
+                String contentText;
+                String actionTitle;
+
+                int actionIcon;
+
+                if (radioManager.isPlaying()) {
+                    contentTitle = nowPlaying.get("song");
+                    contentText = currentShow.get("name");
+                    actionTitle = "Stop";
+                    actionIcon = R.drawable.stop;
+                } else {
+                    contentTitle = "Insanity Radio";
+                    contentText = "103.2FM";
+                    actionTitle = "Play";
+                    actionIcon = R.drawable.play;
+                }
+
+                Intent playPauseIntent = new Intent(getActivity(), PlayPauseReceiver.class);
+
+                PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Notification notification;
+
+                if (Build.VERSION.SDK_INT >= 21) {
+                    notification = new Notification.Builder(getActivity())
+                            .setVisibility(Notification.VISIBILITY_PUBLIC)
+                            .setSmallIcon(R.drawable.ic_headphone)
+                            .setLargeIcon(largeIconBitmap)
+                            .setContentTitle(contentTitle)
+                            .setContentText(contentText)
+                            .addAction(actionIcon, actionTitle, playPausePendingIntent)
+                            .setStyle(new Notification.MediaStyle()
+                                    .setShowActionsInCompactView(0))
+                            .setColor(Color.BLACK)
+                            .setOngoing(radioManager.isPlaying())
+                            .build();
+                } else {
+                    notification = new Notification.Builder(getActivity())
+                            .setSmallIcon(R.drawable.ic_headphone)
+                            .setLargeIcon(largeIconBitmap)
+                            .setContentTitle(contentTitle)
+                            .setContentText(contentText)
+                            .addAction(actionIcon, actionTitle, playPausePendingIntent)
+                            .setOngoing(radioManager.isPlaying())
+                            .build();
+                }
+
+                notificationManager.notify(1, notification);
             }
-
-            Intent playPauseIntent = new Intent(getActivity(), PlayPauseReceiver.class);
-
-            PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            Notification notification = new Notification.Builder(getActivity())
-                    .setVisibility(Notification.VISIBILITY_PUBLIC)
-                    .setSmallIcon(R.drawable.ic_headphone)
-                    .setLargeIcon(largeIconBitmap)
-                    .setContentTitle(contentTitle)
-                    .setContentText(contentText)
-                    .addAction(actionIcon, actionTitle, playPausePendingIntent)
-                    .setStyle(new Notification.MediaStyle()
-                            .setShowActionsInCompactView(0))
-                            // TODO: Determine final colour before release
-                    .setColor(Color.BLACK)
-                    .setOngoing(radioManager.isPlaying())
-                    .build();
-
-            notificationManager.notify(1, notification);
         }
     }
 }

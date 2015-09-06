@@ -311,8 +311,10 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                 }
 
                 Intent playPauseIntent = new Intent(getActivity(), PlayPauseReceiver.class);
+                Intent openAppIntent = new Intent(getActivity(), MainActivity.class);
 
                 PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent openAppPendingIntent = PendingIntent.getActivity(getActivity(), 0, openAppIntent, 0);
 
                 Notification notification;
 
@@ -323,6 +325,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                             .setLargeIcon(largeIconBitmap)
                             .setContentTitle(contentTitle)
                             .setContentText(contentText)
+                            .setContentIntent(openAppPendingIntent)
                             .addAction(actionIcon, actionTitle, playPausePendingIntent)
                             .setStyle(new Notification.MediaStyle()
                                     .setShowActionsInCompactView(0))
@@ -335,6 +338,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                             .setLargeIcon(largeIconBitmap)
                             .setContentTitle(contentTitle)
                             .setContentText(contentText)
+                            .setContentIntent(openAppPendingIntent)
                             .addAction(actionIcon, actionTitle, playPausePendingIntent)
                             .setOngoing(radioManager.isPlaying())
                             .build();

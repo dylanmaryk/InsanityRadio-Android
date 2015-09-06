@@ -246,6 +246,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                radioPaused(); // Called twice if radio stopped by user
                 displayDefaultImage();
             }
         });

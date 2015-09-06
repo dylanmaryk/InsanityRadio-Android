@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaMetadata;
+import android.media.session.MediaSession;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -319,6 +321,13 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                 Notification notification;
 
                 if (Build.VERSION.SDK_INT >= 21) {
+                    MediaMetadata.Builder mediaMetadataBuilder = new MediaMetadata.Builder();
+                    mediaMetadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, largeIconBitmap);
+
+                    MediaSession mediaSession = new MediaSession(getActivity(), "insanityradio");
+                    mediaSession.setActive(true);
+                    mediaSession.setMetadata(mediaMetadataBuilder.build());
+
                     notification = new Notification.Builder(getActivity())
                             .setVisibility(Notification.VISIBILITY_PUBLIC)
                             .setSmallIcon(R.drawable.ic_headphone)
@@ -328,6 +337,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                             .setContentIntent(openAppPendingIntent)
                             .addAction(actionIcon, actionTitle, playPausePendingIntent)
                             .setStyle(new Notification.MediaStyle()
+                                    .setMediaSession(mediaSession.getSessionToken())
                                     .setShowActionsInCompactView(0))
                             .setColor(Color.BLACK)
                             .setOngoing(radioManager.isPlaying())

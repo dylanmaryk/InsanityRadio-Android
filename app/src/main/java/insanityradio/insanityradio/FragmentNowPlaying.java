@@ -2,9 +2,12 @@ package insanityradio.insanityradio;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,10 +35,11 @@ import co.mobiwise.library.RadioManager;
 public class FragmentNowPlaying extends Fragment implements RadioListener {
     private static FragmentNowPlaying instance;
 
+    private Bitmap defaultImage;
     private RadioManager radioManager;
-    private Bitmap insanityIconBitmap;
     private HashMap<String, String> currentShow;
     private HashMap<String, String> nowPlaying;
+    private boolean cancelNotificationOnStop;
     private ImageButton playPauseButton;
     private TextView currentShowTextView;
     private TextView nowPlayingTextView;
@@ -53,10 +57,10 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setRetainInstance(true);
 
+        defaultImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.insanity_icon);
         radioManager = RadioManager.with(getActivity());
         radioManager.connect();
         radioManager.registerListener(this);
-        insanityIconBitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.insanity_icon);
 
         View view = inflater.inflate(R.layout.fragment_nowplaying, container, false);
 
@@ -64,7 +68,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playPauseButtonTapped();
+                playPauseButtonTapped(true);
             }
         });
         currentShowTextView = (TextView) view.findViewById(R.id.current_show);
@@ -103,6 +107,8 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         objectRequest.setRetryPolicy(DataModel.getRetryPolicy());
 
         VolleySingleton.getInstance(getActivity()).getRequestQueue().add(objectRequest);
+
+        displayNotification(null);
     }
 
     private void updateCurrentShow() {
@@ -167,7 +173,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         }, 0, 0, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                displayFinalImage(insanityIconBitmap);
+                displayDefaultImage();
             }
         });
         imageRequest.setRetryPolicy(DataModel.getRetryPolicy());
@@ -177,9 +183,19 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
     private void displayFinalImage(Bitmap bitmap) {
         albumArtImageView.setImageBitmap(bitmap);
+
+        displayNotification(bitmap);
     }
 
-    private void playPauseButtonTapped() {
+    private void displayDefaultImage() {
+        albumArtImageView.setImageBitmap(defaultImage);
+
+        displayNotification(null);
+    }
+
+    public void playPauseButtonTapped(boolean cancelNotification) {
+        cancelNotificationOnStop = cancelNotification;
+
         if (radioManager.isPlaying()) {
             pauseRadio();
         } else {
@@ -223,7 +239,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                displayFinalImage(insanityIconBitmap);
+                displayDefaultImage();
             }
         });
     }
@@ -232,6 +248,52 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     public void onMetaDataReceived(String s, String s1) {
         if (s != null && s.equals("StreamTitle")) {
             DataModel.updateData(getActivity());
+        }
+    }
+
+    private void displayNotification(Bitmap largeIconBitmap) {
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (!radioManager.isPlaying() && cancelNotificationOnStop) {
+            notificationManager.cancel(1);
+        } else {
+            String contentTitle;
+            String contentText;
+            String actionTitle;
+
+            int actionIcon;
+
+            if (radioManager.isPlaying()) {
+                contentTitle = nowPlaying.get("song");
+                contentText = currentShow.get("name");
+                actionTitle = "Stop";
+                actionIcon = R.drawable.stop;
+            } else {
+                contentTitle = "Insanity Radio";
+                contentText = "103.2FM";
+                actionTitle = "Play";
+                actionIcon = R.drawable.play;
+            }
+
+            Intent playPauseIntent = new Intent(getActivity(), PlayPauseReceiver.class);
+
+            PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification notification = new Notification.Builder(getActivity())
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setSmallIcon(R.drawable.ic_headphone)
+                    .setLargeIcon(largeIconBitmap)
+                    .setContentTitle(contentTitle)
+                    .setContentText(contentText)
+                    .addAction(actionIcon, actionTitle, playPausePendingIntent)
+                    .setStyle(new Notification.MediaStyle()
+                            .setShowActionsInCompactView(0))
+                            // TODO: Determine final colour before release
+                    .setColor(Color.BLACK)
+                    .setOngoing(radioManager.isPlaying())
+                    .build();
+
+            notificationManager.notify(1, notification);
         }
     }
 }

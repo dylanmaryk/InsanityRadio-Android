@@ -212,11 +212,16 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     }
 
     private void pauseRadio() {
+        radioPaused();
+
+        radioManager.stopRadio();
+    }
+
+    private void radioPaused() {
         playPauseButton.setEnabled(true);
         playPauseButton.setAlpha(1.0f);
         playPauseButton.setImageResource(R.drawable.play);
         nowPlayingTextView.setText("");
-        radioManager.stopRadio();
     }
 
     @Override
@@ -258,6 +263,8 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                radioPaused();
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setTitle("Cannot Stream Insanity")
                         .setMessage("There was a problem streaming Insanity Radio. Please check your Internet connection.")

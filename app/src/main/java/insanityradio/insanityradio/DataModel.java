@@ -205,7 +205,7 @@ public class DataModel {
 
                 editor.commit();
 
-                ((MainActivity) context).updateUI();
+                context.invalidateOptionsMenu();
                 FragmentNowPlaying.getInstance().updatePlayer();
                 FragmentSchedule.getInstance().updateSchedule();
             }

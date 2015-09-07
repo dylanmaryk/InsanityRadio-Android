@@ -66,8 +66,4 @@ public class MainActivity extends FragmentActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    public void updateUI() {
-        invalidateOptionsMenu();
-    }
 }

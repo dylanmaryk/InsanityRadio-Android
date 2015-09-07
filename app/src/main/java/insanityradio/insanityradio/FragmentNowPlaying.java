@@ -286,7 +286,6 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         });
     }
 
-    @SuppressLint("NewApi")
     private void displayNotification(Bitmap largeIconBitmap) {
         if (Build.VERSION.SDK_INT >= 16) {
             NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -318,7 +317,18 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                 PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 PendingIntent openAppPendingIntent = PendingIntent.getActivity(getActivity(), 0, openAppIntent, 0);
 
-                Notification notification;
+                Notification.Builder notificationBuilder = new Notification.Builder(getActivity())
+                        .setSmallIcon(R.drawable.ic_headphone)
+                        .setLargeIcon(largeIconBitmap)
+                        .setContentTitle(contentTitle)
+                        .setContentText(contentText)
+                        .setContentIntent(openAppPendingIntent)
+                        .addAction(actionIcon, actionTitle, playPausePendingIntent)
+                        .setOngoing(radioManager.isPlaying());
+
+                if (Build.VERSION.SDK_INT >= 17) {
+                    notificationBuilder.setShowWhen(false);
+                }
 
                 if (Build.VERSION.SDK_INT >= 21) {
                     MediaMetadata.Builder mediaMetadataBuilder = new MediaMetadata.Builder();
@@ -328,33 +338,15 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                     mediaSession.setActive(true);
                     mediaSession.setMetadata(mediaMetadataBuilder.build());
 
-                    notification = new Notification.Builder(getActivity())
+                    notificationBuilder
                             .setVisibility(Notification.VISIBILITY_PUBLIC)
-                            .setSmallIcon(R.drawable.ic_headphone)
-                            .setLargeIcon(largeIconBitmap)
-                            .setContentTitle(contentTitle)
-                            .setContentText(contentText)
-                            .setContentIntent(openAppPendingIntent)
-                            .addAction(actionIcon, actionTitle, playPausePendingIntent)
                             .setStyle(new Notification.MediaStyle()
                                     .setMediaSession(mediaSession.getSessionToken())
                                     .setShowActionsInCompactView(0))
-                            .setColor(Color.BLACK)
-                            .setOngoing(radioManager.isPlaying())
-                            .build();
-                } else {
-                    notification = new Notification.Builder(getActivity())
-                            .setSmallIcon(R.drawable.ic_headphone)
-                            .setLargeIcon(largeIconBitmap)
-                            .setContentTitle(contentTitle)
-                            .setContentText(contentText)
-                            .setContentIntent(openAppPendingIntent)
-                            .addAction(actionIcon, actionTitle, playPausePendingIntent)
-                            .setOngoing(radioManager.isPlaying())
-                            .build();
+                            .setColor(Color.BLACK);
                 }
 
-                notificationManager.notify(1, notification);
+                notificationManager.notify(1, notificationBuilder.build());
             }
 
             cancelNotificationOnStop = false;

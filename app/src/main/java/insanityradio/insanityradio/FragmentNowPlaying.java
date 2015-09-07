@@ -356,6 +356,8 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
                 notificationManager.notify(1, notification);
             }
+
+            cancelNotificationOnStop = false;
         }
     }
 }

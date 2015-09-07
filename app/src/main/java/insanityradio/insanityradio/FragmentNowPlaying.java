@@ -1,6 +1,5 @@
 package insanityradio.insanityradio;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,6 +14,7 @@ import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +33,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import co.mobiwise.library.RadioListener;
 import co.mobiwise.library.RadioManager;
@@ -81,6 +84,17 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         nowPlayingTextView = (TextView) view.findViewById(R.id.now_playing);
         albumArtImageView = (ImageView) view.findViewById(R.id.album_art);
 
+        Calendar currentCalendar = Calendar.getInstance();
+
+        int millisecondsUntilNextHour = (3600 * 1000) - (currentCalendar.get(Calendar.MINUTE) * 60 * 1000) - (currentCalendar.get(Calendar.SECOND) * 1000);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startCurretShowTimer();
+            }
+        }, millisecondsUntilNextHour);
+
         updateCurrentShow();
 
         return view;
@@ -114,6 +128,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
         VolleySingleton.getInstance(getActivity()).getRequestQueue().add(objectRequest);
 
+        // Updates notification sooner, before image is retrieved, but means notification is updated twice
         displayNotification(null);
     }
 
@@ -351,5 +366,21 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
             cancelNotificationOnStop = false;
         }
+    }
+
+    private void startCurretShowTimer() {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateCurrentShow();
+                    }
+                });
+            }
+        };
+
+        new Timer().schedule(timerTask, 0, 3600 * 1000);
     }
 }

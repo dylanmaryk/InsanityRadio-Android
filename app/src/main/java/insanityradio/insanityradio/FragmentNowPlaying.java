@@ -45,6 +45,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     private static FragmentNowPlaying instance;
 
     private Bitmap defaultImage;
+    private Bitmap previousNotificationLargeIcon;
     private RadioManager radioManager;
     private HashMap<String, String> currentShow;
     private HashMap<String, String> nowPlaying;
@@ -129,7 +130,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
         VolleySingleton.getInstance(getActivity()).getRequestQueue().add(objectRequest);
 
         // Updates notification sooner, before image is retrieved, but means notification is updated twice
-        displayNotification(null);
+        displayNotification(previousNotificationLargeIcon);
     }
 
     private void updateCurrentShow() {
@@ -303,6 +304,8 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
     private void displayNotification(Bitmap largeIconBitmap) {
         if (Build.VERSION.SDK_INT >= 16) {
+            previousNotificationLargeIcon = largeIconBitmap;
+
             NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
             if (!radioManager.isPlaying() && cancelNotificationOnStop) {

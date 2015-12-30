@@ -5,3 +5,6 @@
 .DS_Store
 /build
 /captures
+
+/socialize/assets/socialize.properties
+/app/src/main/res/values/strings-keys.xml

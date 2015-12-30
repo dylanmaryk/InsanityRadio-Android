@@ -111,7 +111,7 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
 
         nowPlayingTextView.setText(nowPlayingArtist + "\n" + nowPlayingSong);
 
-        String url = "http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=38ca8452a5704df8ba7e7de9855844e7&artist=" + nowPlayingArtist + "&track=" + nowPlayingSong + "&autocorrect&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=" + R.string.LASTFM_API_KEY + "&artist=" + nowPlayingArtist + "&track=" + nowPlayingSong + "&autocorrect&format=json";
         url = url.replaceAll(" ", "%20");
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

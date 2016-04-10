@@ -68,20 +68,20 @@ public class ScheduleAdapter extends SimpleSectionedAdapter<ScheduleAdapter.View
             schedule = DataModel.getSchedule(FragmentSchedule.getInstance().getActivity());
         }
 
-        if (schedule != null) {
-            return schedule.size();
+        if (schedule == null) {
+            return 0;
         }
 
-        return 0;
+        return schedule.size();
     }
 
     @Override
     protected int getItemCountForSection(int section) {
-        if (schedule != null) {
-            return schedule.get(dayForSection(section)).size();
+        if (schedule == null) {
+            return 0;
         }
 
-        return 0;
+        return schedule.get(dayForSection(section)).size();
     }
 
     @Override

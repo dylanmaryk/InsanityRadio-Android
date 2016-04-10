@@ -303,72 +303,74 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
     }
 
     private void displayNotification(Bitmap largeIconBitmap) {
-        if (Build.VERSION.SDK_INT >= 16) {
-            previousNotificationLargeIcon = largeIconBitmap;
+        if (Build.VERSION.SDK_INT < 16) {
+            return;
+        }
 
-            NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        previousNotificationLargeIcon = largeIconBitmap;
 
-            if (!radioManager.isPlaying() && cancelNotificationOnStop) {
-                notificationManager.cancel(1);
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (!radioManager.isPlaying() && cancelNotificationOnStop) {
+            notificationManager.cancel(1);
+        } else {
+            String contentTitle;
+            String contentText;
+            String actionTitle;
+
+            int actionIcon;
+
+            if (radioManager.isPlaying()) {
+                contentTitle = nowPlaying.get("song");
+                contentText = currentShow.get("name");
+                actionTitle = "Stop";
+                actionIcon = R.drawable.stop;
             } else {
-                String contentTitle;
-                String contentText;
-                String actionTitle;
-
-                int actionIcon;
-
-                if (radioManager.isPlaying()) {
-                    contentTitle = nowPlaying.get("song");
-                    contentText = currentShow.get("name");
-                    actionTitle = "Stop";
-                    actionIcon = R.drawable.stop;
-                } else {
-                    contentTitle = "Insanity Radio";
-                    contentText = "103.2FM";
-                    actionTitle = "Play";
-                    actionIcon = R.drawable.play;
-                }
-
-                Intent playPauseIntent = new Intent(getActivity(), PlayPauseReceiver.class);
-                Intent openAppIntent = new Intent(getActivity(), MainActivity.class);
-
-                PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                PendingIntent openAppPendingIntent = PendingIntent.getActivity(getActivity(), 0, openAppIntent, 0);
-
-                Notification.Builder notificationBuilder = new Notification.Builder(getActivity())
-                        .setSmallIcon(R.drawable.ic_headphone)
-                        .setLargeIcon(largeIconBitmap)
-                        .setContentTitle(contentTitle)
-                        .setContentText(contentText)
-                        .setContentIntent(openAppPendingIntent)
-                        .addAction(actionIcon, actionTitle, playPausePendingIntent)
-                        .setOngoing(radioManager.isPlaying());
-
-                if (Build.VERSION.SDK_INT >= 17) {
-                    notificationBuilder.setShowWhen(false);
-                }
-
-                if (Build.VERSION.SDK_INT >= 21) {
-                    MediaMetadata.Builder mediaMetadataBuilder = new MediaMetadata.Builder();
-                    mediaMetadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, largeIconBitmap);
-
-                    MediaSession mediaSession = new MediaSession(getActivity(), "insanityradio");
-                    mediaSession.setActive(true);
-                    mediaSession.setMetadata(mediaMetadataBuilder.build());
-
-                    notificationBuilder
-                            .setVisibility(Notification.VISIBILITY_PUBLIC)
-                            .setStyle(new Notification.MediaStyle()
-                                    .setMediaSession(mediaSession.getSessionToken())
-                                    .setShowActionsInCompactView(0))
-                            .setColor(Color.BLACK);
-                }
-
-                notificationManager.notify(1, notificationBuilder.build());
+                contentTitle = "Insanity Radio";
+                contentText = "103.2FM";
+                actionTitle = "Play";
+                actionIcon = R.drawable.play;
             }
 
-            cancelNotificationOnStop = false;
+            Intent playPauseIntent = new Intent(getActivity(), PlayPauseReceiver.class);
+            Intent openAppIntent = new Intent(getActivity(), MainActivity.class);
+
+            PendingIntent playPausePendingIntent = PendingIntent.getBroadcast(getActivity(), 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent openAppPendingIntent = PendingIntent.getActivity(getActivity(), 0, openAppIntent, 0);
+
+            Notification.Builder notificationBuilder = new Notification.Builder(getActivity())
+                    .setSmallIcon(R.drawable.ic_headphone)
+                    .setLargeIcon(largeIconBitmap)
+                    .setContentTitle(contentTitle)
+                    .setContentText(contentText)
+                    .setContentIntent(openAppPendingIntent)
+                    .addAction(actionIcon, actionTitle, playPausePendingIntent)
+                    .setOngoing(radioManager.isPlaying());
+
+            if (Build.VERSION.SDK_INT >= 17) {
+                notificationBuilder.setShowWhen(false);
+            }
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                MediaMetadata.Builder mediaMetadataBuilder = new MediaMetadata.Builder();
+                mediaMetadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, largeIconBitmap);
+
+                MediaSession mediaSession = new MediaSession(getActivity(), "insanityradio");
+                mediaSession.setActive(true);
+                mediaSession.setMetadata(mediaMetadataBuilder.build());
+
+                notificationBuilder
+                        .setVisibility(Notification.VISIBILITY_PUBLIC)
+                        .setStyle(new Notification.MediaStyle()
+                                .setMediaSession(mediaSession.getSessionToken())
+                                .setShowActionsInCompactView(0))
+                        .setColor(Color.BLACK);
+            }
+
+            notificationManager.notify(1, notificationBuilder.build());
         }
+
+        cancelNotificationOnStop = false;
     }
 
     private void startCurretShowTimer() {

@@ -128,34 +128,34 @@ public class DataModel {
     public static HashMap<String, String> getNowPlaying(Context context) {
         String nowPlayingString = getPrefsString(context, "nowPlaying");
 
-        if (nowPlayingString != null) {
-            return new Gson().fromJson(nowPlayingString, new TypeToken<HashMap<String, String>>() {}.getType());
+        if (nowPlayingString == null) {
+            HashMap<String, String> nowPlaying = new HashMap<>();
+            nowPlaying.put("song", "");
+            nowPlaying.put("artist", "");
+            return nowPlaying;
         }
 
-        HashMap<String, String> nowPlaying = new HashMap<>();
-        nowPlaying.put("song", "");
-        nowPlaying.put("artist", "");
-        return nowPlaying;
+        return new Gson().fromJson(nowPlayingString, new TypeToken<HashMap<String, String>>() {}.getType());
     }
 
     public static HashMap<String, ArrayList<HashMap<String, String>>> getSchedule(Context context) {
         String scheduleString = getPrefsString(context, "schedule");
 
-        if (scheduleString != null) {
-            return new Gson().fromJson(scheduleString, new TypeToken<HashMap<String, ArrayList<HashMap<String, String>>>>() {}.getType());
+        if (scheduleString == null) {
+            return null;
         }
 
-        return null;
+        return new Gson().fromJson(scheduleString, new TypeToken<HashMap<String, ArrayList<HashMap<String, String>>>>() {}.getType());
     }
 
     public static String getShareText(Context context) {
         String shareTextString = getPrefsString(context, "shareText");
 
-        if (shareTextString != null) {
-            return shareTextString;
+        if (shareTextString == null) {
+            return "I'm listening to Insanity Radio via the Insanity Radio 103.2FM app www.insanityradio.com/listen";
         }
 
-        return "I'm listening to Insanity Radio via the Insanity Radio 103.2FM app www.insanityradio.com/listen";
+        return shareTextString;
     }
 
     public static boolean getEnableComment(Context context) {

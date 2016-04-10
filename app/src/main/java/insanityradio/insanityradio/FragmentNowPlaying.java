@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.os.Build;
@@ -344,7 +345,6 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                     .setContentTitle(contentTitle)
                     .setContentText(contentText)
                     .setContentIntent(openAppPendingIntent)
-                    .addAction(actionIcon, actionTitle, playPausePendingIntent)
                     .setOngoing(radioManager.isPlaying());
 
             if (Build.VERSION.SDK_INT >= 17) {
@@ -365,6 +365,14 @@ public class FragmentNowPlaying extends Fragment implements RadioListener {
                                 .setMediaSession(mediaSession.getSessionToken())
                                 .setShowActionsInCompactView(0))
                         .setColor(Color.BLACK);
+            }
+
+            if (Build.VERSION.SDK_INT >= 23) {
+                Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(getActivity(), actionIcon), actionTitle, playPausePendingIntent).build();
+
+                notificationBuilder.addAction(action);
+            } else {
+                notificationBuilder.addAction(actionIcon, actionTitle, playPausePendingIntent);
             }
 
             notificationManager.notify(1, notificationBuilder.build());

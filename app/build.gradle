@@ -29,7 +29,5 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.truizlop.sectionedrecyclerview:library:1.0.0'
     compile project(':radio')
-    compile (project(':socialize')) {
-        exclude module: 'facebook'
-    }
+    compile project(':socialize')
 }

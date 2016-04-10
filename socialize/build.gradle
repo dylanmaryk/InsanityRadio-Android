@@ -6,7 +6,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     compile 'com.socialize:facebook:3.1.6'
     compile 'com.socialize:ioc:3.1.6'
-    compile 'com.socialize:loopy:3.1.6'
+    compile 'com.socialize:loopy:3.1.7'
 }
 
 android {

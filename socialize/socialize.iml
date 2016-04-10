@@ -105,7 +105,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="commons-codec-1.4" level="project" />
     <orderEntry type="library" exported="" name="ioc-3.1.6" level="project" />
-    <orderEntry type="library" exported="" name="loopy-3.1.6" level="project" />
+    <orderEntry type="library" exported="" name="loopy-3.1.7" level="project" />
     <orderEntry type="library" exported="" name="facebook-3.1.6" level="project" />
   </component>
 </module>
